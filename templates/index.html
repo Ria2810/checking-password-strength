@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XGBoost Classifier</title>
+</head>
+<body>
+    <h1>XGBoost Classifier</h1>
+    <form method="POST" action="/predict">
+        <label for="text_input">Enter a text feature:</label>
+        <div class="password-container">
+            <input type="password" id="password-input" name="text_input" required>
+      
+            <button id="toggle-password">Show</button>
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+    <div id="prediction_result"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          var passwordINput = document.getElementByID("password-input");
+          var toggleBtn = document.getElementByID("toggle-password");
+    
+          toggleBtn.addEventListener("click", function () {
+            if (passwordINput.type === "password") {
+              passwordINput.type = "text";
+              toggleBtn.textContent = "Hide";
+            } else {
+              passwordINput.type = "password";
+              toggleBtn.textContent = "Show";
+            }
+            });
+        });
+    
+        // JavaScript to handle form submission and display the prediction result
+        document.querySelector('form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            if (result.prediction==0){
+            document.querySelector('#prediction_result').innerHTML="The password is weak";
+            }else if (result.prediction==1){
+            document.querySelector('#prediction_result').innerHTML="The password is medium";
+            }
+            else{
+            document.querySelector('#prediction_result').innerHTML="The password is strong";}
+            //document.querySelector('#prediction_result').innerText = `Prediction: ${result.prediction}`;
+
+        });
+
+    </script>
+
+</body>
+</html>
